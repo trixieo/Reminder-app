@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -28,6 +27,12 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Color.fromARGB(255, 6, 23, 41),
           textTheme: TextTheme(
             bodyMedium: TextStyle(color: Color.fromARGB(255, 204, 220, 225)),
+          
+       ),
+       elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.teal,
+        ),
        ),
        
        
@@ -38,7 +43,11 @@ class MyApp extends StatelessWidget {
   }
 }
 class MyAppState extends ChangeNotifier{
-  
+  final reminders=[];
+  void addNew(){
+    reminders.add(NewReminder());
+  }
+
 
 }
 
@@ -146,7 +155,7 @@ class _MainPageState extends State<MainPage>{
                   padding: const EdgeInsets.only(top:20 , left: 15),
                   child: SizedBox(
                     width: 180,
-                    height:130,
+                    height:150,
                     child: ElevatedButton(
                       onPressed: (){
                      
@@ -183,7 +192,7 @@ class _MainPageState extends State<MainPage>{
                   padding: const EdgeInsets.only(top:20 , left: 15, right: 15),
                   child: SizedBox(
                     width: 180,
-                    height:130,
+                    height:150,
                     child: ElevatedButton(
                       onPressed: (){
                      
@@ -191,7 +200,6 @@ class _MainPageState extends State<MainPage>{
                       MaterialPageRoute(builder: (context) => ScheduledReminder()));
                                   
                     }, style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
                       padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 17),
                       alignment: Alignment.topLeft,
                       
@@ -225,18 +233,40 @@ class _MainPageState extends State<MainPage>{
   }
 
 }
+
+
 class NewReminder extends StatelessWidget{
  @override
  Widget build(BuildContext context) {
    return Scaffold(
     body: Column(
       children: [
-        Text('This part has not been done ')
+        Padding(
+          padding: const EdgeInsets.only(top: 40.0, left: 20, right: 20),
+          child: TextField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              hintText: 'Title',
+              
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: TextField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              hintText: 'Description',
+          
+            ),
+          ),
+        )
       ],
     ),
    );
 
-        // TODO: implement build
 
   }
 }
