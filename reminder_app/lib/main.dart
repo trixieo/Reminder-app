@@ -236,11 +236,14 @@ class _MainPageState extends State<MainPage>{
 
 
 class NewReminder extends StatelessWidget{
+  final reminder = [];
+  final date= DateFormat('dd-MMMM-yyyy').format(DateTime.now());
  @override
  Widget build(BuildContext context) {
    return Scaffold(
     body: Column(
       children: [
+        //This is the title of the reminder field
         Padding(
           padding: const EdgeInsets.only(top: 40.0, left: 20, right: 20),
           child: TextField(
@@ -252,17 +255,26 @@ class NewReminder extends StatelessWidget{
             ),
           ),
         ),
+        //The description part
         Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
-          child: TextField(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              hintText: 'Description',
-          
+          // ignore: sized_box_for_whitespace
+          child: Container(
+            height: 250,
+            child: TextField(
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Description',
+            
+              ),
+              maxLines: null,
             ),
           ),
-        )
+        ),
+        ElevatedButton(onPressed: (){}, child: Row(
+          children: [Text('Date')],
+        ))
       ],
     ),
    );
