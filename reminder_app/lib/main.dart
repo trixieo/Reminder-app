@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, camel_case_types
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +49,8 @@ class MyAppState extends ChangeNotifier{
   void addNew(){
     reminders.add(NewReminder());
   }
+  DateTime now = DateTime.now();
+  
 
 
 }
@@ -92,16 +96,18 @@ class MainPage extends StatefulWidget{
   }
 
 class _MainPageState extends State<MainPage>{
-  DateTime now = DateTime.now();
+  
   
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
+    final date =appState.now;
 
-     String formattedDay = DateFormat('dd').format(now);
-     String formattedMonth = DateFormat('MMMM').format(now);
-     String formattedYear = DateFormat('yyyy').format(now);
-     String formattedDayOfWeek = DateFormat('EEEE').format(now);  
+     String formattedDay = DateFormat('dd').format(date);
+     String formattedMonth = DateFormat('MMMM').format(date);
+     String formattedYear = DateFormat('yyyy').format(date);
+     String formattedDayOfWeek = DateFormat('EEEE').format(date);  
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Padding(
@@ -142,7 +148,7 @@ class _MainPageState extends State<MainPage>{
                   {Navigator.push(
                     context, 
                     MaterialPageRoute(
-                      builder: (context) => NewReminder(),));
+                      builder: (context) => myNewreminder(),));
                           
                   }, child: Icon(Icons.add, size: 30,),),
                 )
@@ -233,15 +239,36 @@ class _MainPageState extends State<MainPage>{
   }
 
 }
+class myNewreminder extends StatefulWidget{
+  @override
+  State<myNewreminder> createState() => NewReminder();
+}
 
-
-class NewReminder extends StatelessWidget{
+class NewReminder extends State<myNewreminder>{
+  
   final reminder = [];
-  final date= DateFormat('dd-MMMM-yyyy').format(DateTime.now());
+  void DateSelection(context) async{
+    //date picker dialog
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), 
+      firstDate: DateTime.now(), 
+      lastDate: DateTime(2197));
+    
+    if (selectedDate != null){
+      print(selectedDate);
+    }
+  }
+  
  @override
  Widget build(BuildContext context) {
+  var appState = context.watch<MyAppState>();
+  
+  String date = DateFormat('dd-MMMM-yy').format(appState.now);
+
    return Scaffold(
     body: Column(
+      
       children: [
         //This is the title of the reminder field
         Padding(
@@ -256,24 +283,36 @@ class NewReminder extends StatelessWidget{
           ),
         ),
         //The description part
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          // ignore: sized_box_for_whitespace
-          child: Container(
-            height: 250,
-            child: TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Description',
-            
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            // ignore: sized_box_for_whitespace
+            child: Container(
+              child: TextField(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Description',
+              
+                ),
+                maxLines: null,
               ),
-              maxLines: null,
             ),
           ),
         ),
-        ElevatedButton(onPressed: (){}, child: Row(
-          children: [Text('Date')],
+        ElevatedButton(onPressed: (){
+          DateSelection(context);
+        }, child: Row(
+          children:  [ 
+            Icon(
+              Icons.calendar_month, 
+              color: Colors.white,), 
+            SizedBox(
+              width: 10,),
+              Text(
+                date, 
+                style: TextStyle(
+                  color: Colors.white),)],
         ))
       ],
     ),
