@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.teal,
         ),
        ),
+       primaryColorDark: Colors.black
        
        
       ),home: MyHomePage(),
@@ -50,6 +51,18 @@ class MyAppState extends ChangeNotifier{
     reminders.add(NewReminder());
   }
   DateTime now = DateTime.now();
+  
+  void colortheme(){
+    const selectedtheme=0;
+    switch (selectedtheme){
+      case 0:
+        const color=ColorScheme.dark();
+      case 1:
+        const color=ColorScheme.dark();
+        
+    }
+    notifyListeners();
+  }
   
 
 
@@ -108,6 +121,8 @@ class _MainPageState extends State<MainPage>{
      String formattedMonth = DateFormat('MMMM').format(date);
      String formattedYear = DateFormat('yyyy').format(date);
      String formattedDayOfWeek = DateFormat('EEEE').format(date);  
+
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Padding(
@@ -232,6 +247,10 @@ class _MainPageState extends State<MainPage>{
               ],
               
             ),
+            ElevatedButton(onPressed: (){
+              appState.colortheme();
+              //TODO:finish building the light and dark mode button
+            }, child: Icon(Icons.sunny, color: Colors.white,),)
   ])
           )
           );
@@ -247,24 +266,45 @@ class myNewreminder extends StatefulWidget{
 class NewReminder extends State<myNewreminder>{
   
   final reminder = [];
-  void DateSelection(context) async{
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> DateSelection(context) async{
     //date picker dialog
-    DateTime? selectedDate = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(), 
       firstDate: DateTime.now(), 
       lastDate: DateTime(2197));
     
-    if (selectedDate != null){
-      print(selectedDate);
+    if (picked != null && picked!=selectedDate){
+      setState(() {
+        selectedDate=picked;
+      });
+      
     }
   }
+  TimeOfDay selectedTime = TimeOfDay.now();
+  Future<void> Timeselection(context) async{
+    final TimeOfDay? timePicked = await showTimePicker(
+      context: context, 
+      initialTime: TimeOfDay.now());
+      
+      if (timePicked !=null){
+        setState(() {
+          selectedTime=timePicked;
+        });
+      }
+  }
+
+
   
  @override
  Widget build(BuildContext context) {
+  // ignore: unused_local_variable
   var appState = context.watch<MyAppState>();
   
-  String date = DateFormat('dd-MMMM-yy').format(appState.now);
+  String date = DateFormat('dd-MMMM-yyyy').format(selectedDate.toLocal());
+  
 
    return Scaffold(
     body: Column(
@@ -283,37 +323,62 @@ class NewReminder extends State<myNewreminder>{
           ),
         ),
         //The description part
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            // ignore: sized_box_for_whitespace
-            child: Container(
-              child: TextField(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: 'Description',
-              
-                ),
-                maxLines: null,
-              ),
-            ),
+             Flexible(
+              flex: 250,
+                      // ignore: sized_box_for_whitespace, avoid_unnecessary_containers
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+
+                          child: TextField(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Description',
+                          
+                            ),
+                            maxLines: null,
+                          ),
+                        ),
+                      ),
+                    
+
+        //This is the date selection button section              
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 13 ),
+          child: ElevatedButton(onPressed: (){
+            DateSelection(context);
+          }, child: Row(
+            children:  [ 
+              Icon(
+                Icons.calendar_month, 
+                color: Colors.white,), 
+              SizedBox(
+                width: 10,),
+                Text(
+                  date, 
+                  style: TextStyle(
+                    color: Colors.white),)],
+                  
+          ),
           ),
         ),
-        ElevatedButton(onPressed: (){
-          DateSelection(context);
-        }, child: Row(
-          children:  [ 
-            Icon(
-              Icons.calendar_month, 
-              color: Colors.white,), 
-            SizedBox(
-              width: 10,),
-              Text(
-                date, 
-                style: TextStyle(
-                  color: Colors.white),)],
-        ))
+
+        //this is the section for the time section picker
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, ),
+          child: ElevatedButton(onPressed: (){
+            Timeselection(context);
+          
+          }, child: 
+          
+          Row(
+            children: [ Icon(Icons.access_alarm, color: Colors.white,),
+            // ignore: unnecessary_string_interpolations
+              Text('${selectedTime.format(context)}', style: TextStyle(color: Colors.white),),
+            ],
+          )),
+        ),
+        
       ],
     ),
    );
