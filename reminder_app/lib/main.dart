@@ -4,15 +4,63 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async{
+  //Ensures Flutter Bindings are initialized before any async operations
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //Retrieves the stored theme mode from shared preferences
+  final prefs = await SharedPreferences.getInstance();
+
+  //if no theme mode is stored, default to the system's theme mode which is index: 0
+  final themeMode =ThemeMode.values[prefs.getInt('themeMode')?? 0];
+
+  //Run the app with the initial theme mode
+  runApp(MyApp(themeMode: themeMode));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
-  // This widget is the root of your application.
+
+class MyApp extends StatefulWidget{
+
+  final ThemeMode themeMode;
+
+  //constructor to accept the initial theme mode
+  MyApp({required this.themeMode});
+  @override
+  State<MyApp> createState() => _MyApp();
+}
+
+class _MyApp extends State<MyApp> {
+  late ThemeMode _themeMode;
+  @override
+  void initState() {
+    super.initState();
+    //set the initial theme mode from the widget
+    _themeMode = widget.themeMode;
+  }
+  //save the selected theme mode to preferences
+  Future<void> saveThemeMode(ThemeMode themeMode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('themeMode', themeMode.index);
+  }
+  
+ 
+  // Toggle between light and dark theme modes
+  void _onToggleTheme() {
+    setState(() {
+      // Switch between light and dark modes
+      if (_themeMode == ThemeMode.light) {
+        _themeMode = ThemeMode.dark;
+      } else {
+        _themeMode = ThemeMode.light;
+      }
+      // Save the new theme mode
+      saveThemeMode(_themeMode);
+    });
+  }
+ 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -21,27 +69,40 @@ class MyApp extends StatelessWidget {
       child:  MaterialApp(
         title: 'Reminder',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: Colors.teal,
-        ).copyWith(
-            secondary: Colors.blue, // Green as the accent color
-        ),
-          scaffoldBackgroundColor: Color.fromARGB(255, 6, 23, 41),
-          textTheme: TextTheme(
-            bodyMedium: TextStyle(color: Color.fromARGB(255, 204, 220, 225)),
-          
-       ),
-       elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.teal,
-        ),
-       ),
-       primaryColorDark: Colors.black
-       
-       
-      ),home: MyHomePage(),
+          brightness: Brightness.light,
+          primarySwatch: Colors.teal,
+           primaryColor: Colors.teal[800],
+        scaffoldBackgroundColor: Colors.white,
+        dividerColor: Colors.grey[700],
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.teal[600],),
+        textTheme: TextTheme(
+        bodyMedium: TextStyle(color: Colors.grey)
+      ),
+      
+
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.teal,
+         primaryColor: Colors.teal[800],
+        scaffoldBackgroundColor: Colors.black,
+        dividerColor: Colors.grey[700],
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.teal[600],
+          textTheme: ButtonTextTheme.primary,
+      ),
+      textTheme: TextTheme(
+        bodyMedium: TextStyle(color: Colors.white)
+      ),
+      
+      
     ),
-    );
+    themeMode: _themeMode,
+    home: MyHomePage(
+      onToggleTheme: _onToggleTheme,
+    ),
+    ));
     
   }
 }
@@ -52,36 +113,29 @@ class MyAppState extends ChangeNotifier{
   }
   DateTime now = DateTime.now();
   
-  void colortheme(){
-    const selectedtheme=0;
-    switch (selectedtheme){
-      case 0:
-        const color=ColorScheme.dark();
-      case 1:
-        const color=ColorScheme.dark();
-        
-    }
-    notifyListeners();
-  }
+  
   
 
 
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  final VoidCallback onToggleTheme;
+  MyHomePage({required this.onToggleTheme});
+  
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  
   @override
   void initState(){
     super.initState();
     Timer(Duration(seconds: 2), (){
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context)=> MainPage()));
+        MaterialPageRoute(builder: (context)=> MainPage(onToggleTheme: () { widget.onToggleTheme; },)));
     });
   }
 
@@ -104,6 +158,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }}
 
 class MainPage extends StatefulWidget{
+  final VoidCallback onToggleTheme;
+  MainPage({required this.onToggleTheme});
   @override
   State<MainPage> createState() => _MainPageState();
   }
@@ -116,6 +172,7 @@ class _MainPageState extends State<MainPage>{
     var appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
     final date =appState.now;
+    final buttonTheme = theme.buttonTheme;
 
      String formattedDay = DateFormat('dd').format(date);
      String formattedMonth = DateFormat('MMMM').format(date);
@@ -141,7 +198,10 @@ class _MainPageState extends State<MainPage>{
                         children: [
                           Row(
                             children: [
-                              Text(formattedMonth, style: TextStyle(fontWeight: FontWeight.bold),),Padding(
+                              Text(
+                                formattedMonth, 
+                                style: TextStyle(fontWeight: FontWeight.bold),),
+                              Padding(
                                 padding: const EdgeInsets.only(left: 5),
                                 child: Text(formattedYear, style: TextStyle(fontWeight: FontWeight.bold),),
                               ),
@@ -159,13 +219,17 @@ class _MainPageState extends State<MainPage>{
                 // The below part adds a button which will be used to redirect to another page
                 Padding(
                   padding: const EdgeInsets.only(right: 15.0),
-                  child: FloatingActionButton(onPressed: ()
-                  {Navigator.push(
-                    context, 
-                    MaterialPageRoute(
-                      builder: (context) => myNewreminder(),));
+                  child: 
+                    FloatingActionButton(onPressed: ()
+                      {Navigator.push(context, 
+                        MaterialPageRoute(
+                          builder: (context) => myNewreminder(),));
                           
-                  }, child: Icon(Icons.add, size: 30,),),
+                      }, 
+                      child: Icon(Icons.add, size: 30,),
+                      
+                      ),
+                      
                 )
                 ]
                 ),
@@ -246,12 +310,9 @@ class _MainPageState extends State<MainPage>{
                 
               ],
               
-            ),
-            ElevatedButton(onPressed: (){
-              appState.colortheme();
-              //TODO:finish building the light and dark mode button
-            }, child: Icon(Icons.sunny, color: Colors.white,),)
-  ])
+            ), 
+            ElevatedButton(onPressed: widget.onToggleTheme, child: Icon(Icons.dark_mode_rounded))
+            ])
           )
           );
     
