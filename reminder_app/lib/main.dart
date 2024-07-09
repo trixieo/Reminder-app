@@ -4,105 +4,37 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 
-void main() async{
-  //Ensures Flutter Bindings are initialized before any async operations
-  WidgetsFlutterBinding.ensureInitialized();
-
-  //Retrieves the stored theme mode from shared preferences
-  final prefs = await SharedPreferences.getInstance();
-
-  //if no theme mode is stored, default to the system's theme mode which is index: 0
-  final themeMode =ThemeMode.values[prefs.getInt('themeMode')?? 0];
-
-  //Run the app with the initial theme mode
-  runApp(MyApp(themeMode: themeMode));
-}
-
-
-
-class MyApp extends StatefulWidget{
-
-  final ThemeMode themeMode;
-
-  //constructor to accept the initial theme mode
-  MyApp({required this.themeMode});
-  @override
-  State<MyApp> createState() => _MyApp();
-}
-
-class _MyApp extends State<MyApp> {
-  late ThemeMode _themeMode;
-  @override
-  void initState() {
-    super.initState();
-    //set the initial theme mode from the widget
-    _themeMode = widget.themeMode;
-  }
-  //save the selected theme mode to preferences
-  Future<void> saveThemeMode(ThemeMode themeMode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('themeMode', themeMode.index);
-  }
+void main(){
   
- 
-  // Toggle between light and dark theme modes
-  void _onToggleTheme() {
-    setState(() {
-      // Switch between light and dark modes
-      if (_themeMode == ThemeMode.light) {
-        _themeMode = ThemeMode.dark;
-      } else {
-        _themeMode = ThemeMode.light;
-      }
-      // Save the new theme mode
-      saveThemeMode(_themeMode);
-    });
-  }
- 
+  runApp(const MyApp());
+}
+
+
+
+class MyApp extends StatelessWidget{
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
 
       create: (context) => MyAppState(),
-      child:  MaterialApp(
-        title: 'Reminder',
-        theme: ThemeData(
-          brightness: Brightness.light,
-          primarySwatch: Colors.teal,
-           primaryColor: Colors.teal[800],
-        scaffoldBackgroundColor: Colors.white,
-        dividerColor: Colors.grey[700],
-        buttonTheme: ButtonThemeData(
-          buttonColor: Colors.teal[600],),
-        textTheme: TextTheme(
-        bodyMedium: TextStyle(color: Colors.grey)
-      ),
-      
-
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.teal,
-         primaryColor: Colors.teal[800],
-        scaffoldBackgroundColor: Colors.black,
-        dividerColor: Colors.grey[700],
-        buttonTheme: ButtonThemeData(
-          buttonColor: Colors.teal[600],
-          textTheme: ButtonTextTheme.primary,
-      ),
-      textTheme: TextTheme(
-        bodyMedium: TextStyle(color: Colors.white)
-      ),
-      
-      
-    ),
-    themeMode: _themeMode,
-    home: MyHomePage(
-      onToggleTheme: _onToggleTheme,
-    ),
-    ));
+      child:  AdaptiveTheme(
+        light: ThemeData.light(useMaterial3: true),
+        dark: ThemeData.dark(useMaterial3: true),
+        initial: AdaptiveThemeMode.light,
+        builder: (theme, darktheme) {
+          return MaterialApp(
+            title: 'Reminder',
+            theme: theme,
+            darkTheme: darktheme,
+              
+            home: MyHomePage()
+              );
+        }
+      ));
     
   }
 }
@@ -112,18 +44,9 @@ class MyAppState extends ChangeNotifier{
     reminders.add(NewReminder());
   }
   DateTime now = DateTime.now();
-  
-  
-  
-
-
 }
 
 class MyHomePage extends StatefulWidget {
-  final VoidCallback onToggleTheme;
-  MyHomePage({required this.onToggleTheme});
-  
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -135,9 +58,11 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     Timer(Duration(seconds: 2), (){
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context)=> MainPage(onToggleTheme: () { widget.onToggleTheme; },)));
+        MaterialPageRoute(builder: (context)=> MainPage()));
     });
   }
+
+  //this is the start of the build of the first page
 
   @override
   Widget build(BuildContext context) {
@@ -151,15 +76,14 @@ class _MyHomePageState extends State<MyHomePage> {
         fontSize: 36, 
         fontWeight: FontWeight.bold, 
         fontStyle: FontStyle.italic,
-        color: theme.colorScheme.primary,
+        color: theme.primaryColor,
         ),),
     ),
    );
   }}
 
 class MainPage extends StatefulWidget{
-  final VoidCallback onToggleTheme;
-  MainPage({required this.onToggleTheme});
+
   @override
   State<MainPage> createState() => _MainPageState();
   }
@@ -193,21 +117,22 @@ class _MainPageState extends State<MainPage>{
                   padding: const EdgeInsets.only(left: 15.0),
                   child: Row(
                     children: [
-                      Text(formattedDay, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 55), ),
+                      Text(formattedDay, style: theme.textTheme.bodyLarge,
+                         ),
                       Column(
                         children: [
                           Row(
                             children: [
                               Text(
                                 formattedMonth, 
-                                style: TextStyle(fontWeight: FontWeight.bold),),
+                                style: theme.textTheme.bodyMedium,),
                               Padding(
                                 padding: const EdgeInsets.only(left: 5),
-                                child: Text(formattedYear, style: TextStyle(fontWeight: FontWeight.bold),),
+                                child: Text(formattedYear, style: theme.textTheme.bodyMedium,),
                               ),
                             ],
                           ),
-                          Text(formattedDayOfWeek, style: TextStyle(fontWeight: FontWeight.bold),)
+                          Text(formattedDayOfWeek, style: theme.textTheme.bodyMedium, )
                         ],
                       ),
                       
@@ -311,7 +236,7 @@ class _MainPageState extends State<MainPage>{
               ],
               
             ), 
-            ElevatedButton(onPressed: widget.onToggleTheme, child: Icon(Icons.dark_mode_rounded))
+           
             ])
           )
           );
