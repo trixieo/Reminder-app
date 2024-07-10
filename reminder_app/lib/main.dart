@@ -29,9 +29,31 @@ class MyApp extends StatelessWidget{
             theme: ThemeData(
               primaryColor: Colors.teal,
               scaffoldBackgroundColor: Colors.white,
-              textTheme: TextTheme(bodyMedium: TextStyle(color: Colors.grey))
+              textTheme: TextTheme(bodyMedium: TextStyle(color: Colors.black)),
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                )
+              ),
+              floatingActionButtonTheme: FloatingActionButtonThemeData(
+                backgroundColor: Colors.teal,
+                
+              ),
+              iconTheme: IconThemeData(
+                color: Colors.white,
+              )
             ),
-            darkTheme: ThemeData.dark(),
+            darkTheme: ThemeData.dark().copyWith(
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                )
+              ),
+              floatingActionButtonTheme: FloatingActionButtonThemeData(
+                backgroundColor: Colors.teal,
+              )
+            ),
+            
             
             home: MyHomePage()
               );
@@ -93,6 +115,7 @@ class MainPage extends StatefulWidget{
   }
 
 class _MainPageState extends State<MainPage>{
+  @override
   void dispose(){
     darknotifier.dispose();
     super.dispose();
@@ -159,7 +182,7 @@ class _MainPageState extends State<MainPage>{
                           builder: (context) => myNewreminder(),));
                           
                       }, 
-                      child: Icon(Icons.add, size: 30,),
+                      child: Icon(Icons.add, size: 30, color: Colors.white,),
                       
                       ),
                       
@@ -246,7 +269,9 @@ class _MainPageState extends State<MainPage>{
             ), ElevatedButton(onPressed: (){
               isDark = !isDark;
               darknotifier.value = isDark;
-            }, child: Icon(isDark? Icons.wb_sunny_outlined : Icons.wb_sunny_rounded))
+            }, style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white
+            ), child: Icon(isDark? Icons.wb_sunny_outlined : Icons.wb_sunny_rounded),)
            
             ])
           )
