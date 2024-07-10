@@ -4,12 +4,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
 
 void main(){
   
   runApp(const MyApp());
 }
+final darknotifier = ValueNotifier<bool>(false);
 
 
 
@@ -19,24 +19,28 @@ class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-
       create: (context) => MyAppState(),
-      child:  AdaptiveTheme(
-        light: ThemeData.light(useMaterial3: true),
-        dark: ThemeData.dark(useMaterial3: true),
-        initial: AdaptiveThemeMode.light,
-        builder: (theme, darktheme) {
+      child: ValueListenableBuilder<bool>(
+        valueListenable: darknotifier,
+        builder: (BuildContext context , bool isDark, Widget? child){
           return MaterialApp(
             title: 'Reminder',
-            theme: theme,
-            darkTheme: darktheme,
-              
+            themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+            theme: ThemeData(
+              primaryColor: Colors.teal,
+              scaffoldBackgroundColor: Colors.white,
+              textTheme: TextTheme(bodyMedium: TextStyle(color: Colors.grey))
+            ),
+            darkTheme: ThemeData.dark(),
+            
             home: MyHomePage()
               );
+        })
+      );
         }
-      ));
+      
     
-  }
+  
 }
 class MyAppState extends ChangeNotifier{
   final reminders=[];
@@ -89,6 +93,10 @@ class MainPage extends StatefulWidget{
   }
 
 class _MainPageState extends State<MainPage>{
+  void dispose(){
+    darknotifier.dispose();
+    super.dispose();
+  }
   
   
   @override
@@ -96,12 +104,12 @@ class _MainPageState extends State<MainPage>{
     var appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
     final date =appState.now;
-    final buttonTheme = theme.buttonTheme;
+    bool isDark = darknotifier.value;
 
-     String formattedDay = DateFormat('dd').format(date);
-     String formattedMonth = DateFormat('MMMM').format(date);
-     String formattedYear = DateFormat('yyyy').format(date);
-     String formattedDayOfWeek = DateFormat('EEEE').format(date);  
+    String formattedDay = DateFormat('dd').format(date);
+    String formattedMonth = DateFormat('MMMM').format(date);
+    String formattedYear = DateFormat('yyyy').format(date);
+    String formattedDayOfWeek = DateFormat('EEEE').format(date);  
 
 
     return Scaffold(
@@ -235,7 +243,10 @@ class _MainPageState extends State<MainPage>{
                 
               ],
               
-            ), 
+            ), ElevatedButton(onPressed: (){
+              isDark = !isDark;
+              darknotifier.value = isDark;
+            }, child: Icon(isDark? Icons.wb_sunny_outlined : Icons.wb_sunny_rounded))
            
             ])
           )
