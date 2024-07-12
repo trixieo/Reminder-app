@@ -33,10 +33,14 @@ class MyApp extends StatelessWidget{
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,
+                  iconColor: Color.fromARGB(255, 204, 220, 225),
+                  foregroundColor: Color.fromARGB(255, 204, 220, 225)
+                  
                 )
               ),
               floatingActionButtonTheme: FloatingActionButtonThemeData(
                 backgroundColor: Colors.teal,
+                foregroundColor: Color.fromARGB(255, 204, 220, 225),
                 
               ),
               iconTheme: IconThemeData(
@@ -47,6 +51,8 @@ class MyApp extends StatelessWidget{
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,
+                  foregroundColor: Color.fromARGB(255, 204, 220, 225),
+                  iconColor: Color.fromARGB(255, 204, 220, 225),
                 )
               ),
               floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -255,7 +261,7 @@ class _MainPageState extends State<MainPage>{
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           
                           children: [Text('Scheduled', style: TextStyle(
-                            color: Color.fromARGB(255, 204, 220, 225), fontSize: 20,
+                             fontSize: 20,
                           )), Icon(Icons.more_vert,color: Color.fromARGB(255, 204, 220, 225), )],
                       ), Text('number of Scheduled' ,style: TextStyle(color: Color.fromARGB(255, 204, 220, 225)),)//TODO:Connect the length of the list of Schduled items to that part of the page
                       ],
@@ -266,7 +272,31 @@ class _MainPageState extends State<MainPage>{
                 
               ],
               
-            ), ElevatedButton(onPressed: (){
+            ),
+            
+            //This sized box is to generate space between the two parts and the all reminders button
+            SizedBox(
+              height: 10,
+            ), 
+            
+            //this is the section for the all reminders button
+            SizedBox(
+              height: 40,
+              width: 380,
+              child: ElevatedButton(
+                onPressed: (){
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context)=> Allreminders()));
+                }, 
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("All reminders", style: TextStyle(fontSize: 20),),
+                    Icon(Icons.arrow_forward_sharp, size: 30,)
+                ],
+              ))),
+            ElevatedButton(onPressed: (){
               isDark = !isDark;
               darknotifier.value = isDark;
             }, style: ElevatedButton.styleFrom(
@@ -424,5 +454,12 @@ class ScheduledReminder extends StatelessWidget{
     return Scaffold(
 
     );
+  }
+}
+class Allreminders extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold();
   }
 }
