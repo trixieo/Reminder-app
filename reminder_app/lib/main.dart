@@ -71,10 +71,8 @@ class MyApp extends StatelessWidget{
   
 }
 class MyAppState extends ChangeNotifier{
-  final reminders=[];
-  void addNew(){
-    reminders.add(NewReminder());
-  }
+  final reminders={};
+  
   DateTime now = DateTime.now();
 }
 
