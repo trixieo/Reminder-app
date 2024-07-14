@@ -250,7 +250,7 @@ class _MainPageState extends State<MainPage>{
                       
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)
-                      )
+                      ),
                     ), child:
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -316,6 +316,8 @@ class myNewreminder extends StatefulWidget{
 class NewReminder extends State<myNewreminder>{
   
   final reminder = [];
+  final GlobalKey<FormState> _reminderkey = GlobalKey<FormState>();
+  final mycontroller= TextEditingController();
   DateTime selectedDate = DateTime.now();
 
   Future<void> DateSelection(context) async{
@@ -356,18 +358,21 @@ class NewReminder extends State<myNewreminder>{
   String date = DateFormat('dd-MMMM-yyyy').format(selectedDate.toLocal());
   
 
-   return Scaffold(
-    body: Column(
+   return Form(
+    key: _reminderkey,
+    child: Column(
       
       children: [
         //This is the title of the reminder field
         Padding(
           padding: const EdgeInsets.only(top: 40.0, left: 20, right: 20),
-          child: TextField(
+          child: TextFormField(
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
               hintText: 'Title',
+              focusColor: Colors.black,
+              hintStyle: TextStyle(color: Colors.black)
               
             ),
           ),
@@ -379,11 +384,12 @@ class NewReminder extends State<myNewreminder>{
                       child: Padding(
                         padding: const EdgeInsets.only(left: 20, right: 20),
 
-                          child: TextField(
+                          child: TextFormField(
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
                               hintText: 'Description',
+                              hintStyle: TextStyle(color: Colors.black),
                           
                             ),
                             maxLines: null,
