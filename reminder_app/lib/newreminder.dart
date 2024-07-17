@@ -9,8 +9,8 @@ import 'main.dart';
 class reminder{
   final String title;
   final String description;
-  final DateTime date;
-  final TimeOfDay time;
+  final String date;
+  final String time;
 
   const reminder({ required this.description, required this.date, required this.time, 
     required this.title,  
@@ -28,7 +28,8 @@ class NewReminder extends State<myNewreminder>{
   final titlecontroller= TextEditingController();
   final desccontroller = TextEditingController();
   final List<reminder> reminders =[];
-  String? title;
+  String title ='';
+  String description = '';
   
   
   DateTime selectedDate = DateTime.now();
@@ -77,6 +78,7 @@ class NewReminder extends State<myNewreminder>{
   var appState = context.watch<MyAppState>();
   
   String date = DateFormat('dd-MMMM-yyyy').format(selectedDate.toLocal());
+  String time = '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
 
    return Scaffold(
      body:  Form(
@@ -89,16 +91,28 @@ class NewReminder extends State<myNewreminder>{
             padding: const EdgeInsets.only(left: 300, top: 30, right: 0),
             child: FloatingActionButton(
               onPressed: (){
-                
+                if(_reminderkey.currentState!.validate()){
+                  _reminderkey.currentState!.save();
+
+                  setState(() {
+                    reminders.add(
+                      reminder(description: description, date: date, time: time, title: title)
+                    );
+                  });
+                }
               }, 
               child: Icon(Icons.check_sharp),
               ),
           ),
           //This is the title of the reminder field
+
           Padding(
             padding: const EdgeInsets.only(top: 10.0, left: 20, right: 20),
             child: TextFormField(
               controller: titlecontroller,
+              style: TextStyle(
+                color: Colors.black
+              ),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
@@ -107,9 +121,16 @@ class NewReminder extends State<myNewreminder>{
                 hintStyle: TextStyle(color: Colors.black)
                 
               ),
-              onChanged: (value) {
-                title = value;
+              validator: (value) {
+                if (value== null || value.isEmpty){
+                  return 'Please enter a title';
+                }
+                return null;
               },
+              onSaved: (value) {
+                title= value!;
+              },
+              
             ),
           ),
           //The description part
@@ -129,29 +150,39 @@ class NewReminder extends State<myNewreminder>{
                     hintStyle: TextStyle(color: Colors.black),
                     ),
                     maxLines: null,
+                    onSaved: (value) {
+                      title= value!;
+                    },
+                    
                 ),
+                
               ),
             ),
            //This is the date selection button section    
                      
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20, top: 13 ),
-            child: ElevatedButton(onPressed: (){
-              DateSelection(context);
-            }, child: Row(
-              children:  [ 
-                Icon(
-                  Icons.calendar_month, 
-                  color: Colors.white,), 
-                SizedBox(
-                  width: 10,),
-                  Text(
-                    date, 
-                    style: TextStyle(
-                      color: Colors.white),)],
-                    
-            ),
-            ),
+            child: 
+              ElevatedButton(
+                onPressed: (){
+                DateSelection(context,);
+            }, 
+             child:
+                   Row(
+                    children:  [ 
+                      Icon(
+                       Icons.calendar_month, 
+                        color: Colors.white,), 
+                      SizedBox(
+                        width: 10,),
+                      Text(
+                        date, 
+                        style: TextStyle(
+                        color: Colors.white),
+                      )
+                    ],
+                  ),
+                ),
           ),
      
           //this is the section for the time section picker

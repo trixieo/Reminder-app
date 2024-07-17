@@ -73,9 +73,7 @@ class MyApp extends StatelessWidget{
   
 }
 class MyAppState extends ChangeNotifier{
-  final reminders = Map<String, List>();
-  //TODO: finish creating the new reminders page
-  //TODO: Watch the youtube video on forms
+
   DateTime now = DateTime.now();
 }
 
