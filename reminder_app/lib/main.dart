@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'newreminder.dart';
+import 'allreminders.dart';
 
 void main(){
   
@@ -71,8 +73,9 @@ class MyApp extends StatelessWidget{
   
 }
 class MyAppState extends ChangeNotifier{
-  final reminders={};
-  
+  final reminders = Map<String, List>();
+  //TODO: finish creating the new reminders page
+  //TODO: Watch the youtube video on forms
   DateTime now = DateTime.now();
 }
 
@@ -308,140 +311,8 @@ class _MainPageState extends State<MainPage>{
   }
 
 }
-class myNewreminder extends StatefulWidget{
-  @override
-  State<myNewreminder> createState() => NewReminder();
-}
-
-class NewReminder extends State<myNewreminder>{
-  
-  final reminder = [];
-  final GlobalKey<FormState> _reminderkey = GlobalKey<FormState>();
-  final mycontroller= TextEditingController();
-  DateTime selectedDate = DateTime.now();
-
-  Future<void> DateSelection(context) async{
-    //date picker dialog
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(), 
-      firstDate: DateTime.now(), 
-      lastDate: DateTime(2197));
-    
-    if (picked != null && picked!=selectedDate){
-      setState(() {
-        selectedDate=picked;
-      });
-      
-    }
-  }
-  TimeOfDay selectedTime = TimeOfDay.now();
-  Future<void> Timeselection(context) async{
-    final TimeOfDay? timePicked = await showTimePicker(
-      context: context, 
-      initialTime: TimeOfDay.now());
-      
-      if (timePicked !=null){
-        setState(() {
-          selectedTime=timePicked;
-        });
-      }
-  }
 
 
-  
- @override
- Widget build(BuildContext context) {
-  // ignore: unused_local_variable
-  var appState = context.watch<MyAppState>();
-  
-  String date = DateFormat('dd-MMMM-yyyy').format(selectedDate.toLocal());
-  
-
-   return Form(
-    key: _reminderkey,
-    child: Column(
-      
-      children: [
-        //This is the title of the reminder field
-        Padding(
-          padding: const EdgeInsets.only(top: 40.0, left: 20, right: 20),
-          child: TextFormField(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              hintText: 'Title',
-              focusColor: Colors.black,
-              hintStyle: TextStyle(color: Colors.black)
-              
-            ),
-          ),
-        ),
-        //The description part
-             Flexible(
-              flex: 250,
-                      // ignore: sized_box_for_whitespace, avoid_unnecessary_containers
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
-
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Description',
-                              hintStyle: TextStyle(color: Colors.black),
-                          
-                            ),
-                            maxLines: null,
-                          ),
-                        ),
-                      ),
-                    
-
-        //This is the date selection button section              
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 13 ),
-          child: ElevatedButton(onPressed: (){
-            DateSelection(context);
-          }, child: Row(
-            children:  [ 
-              Icon(
-                Icons.calendar_month, 
-                color: Colors.white,), 
-              SizedBox(
-                width: 10,),
-                Text(
-                  date, 
-                  style: TextStyle(
-                    color: Colors.white),)],
-                  
-          ),
-          ),
-        ),
-
-        //this is the section for the time section picker
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, ),
-          child: ElevatedButton(onPressed: (){
-            Timeselection(context);
-          
-          }, child: 
-          
-          Row(
-            children: [ Icon(Icons.access_alarm, color: Colors.white,),
-            // ignore: unnecessary_string_interpolations
-              Text('${selectedTime.format(context)}', style: TextStyle(color: Colors.white),),
-            ],
-          )),
-        ),
-        
-      ],
-    ),
-   );
-
-
-  }
-}
 class CompletedReminder extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -458,12 +329,5 @@ class ScheduledReminder extends StatelessWidget{
     return Scaffold(
 
     );
-  }
-}
-class Allreminders extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold();
   }
 }
