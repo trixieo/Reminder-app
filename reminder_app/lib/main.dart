@@ -47,8 +47,18 @@ class MyApp extends StatelessWidget{
               ),
               iconTheme: IconThemeData(
                 color: Colors.white,
-              )
+              ),
+              
+              listTileTheme: ListTileThemeData(
+                tileColor: Colors.teal,
+                textColor: Colors.black,
+                
+                
+              ),
             ),
+
+//This is the dark theme
+
             darkTheme: ThemeData.dark().copyWith(
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
@@ -59,8 +69,14 @@ class MyApp extends StatelessWidget{
               ),
               floatingActionButtonTheme: FloatingActionButtonThemeData(
                 backgroundColor: Colors.teal,
+              ),
+              cardColor: Colors.teal,
+              listTileTheme: ListTileThemeData(
+                textColor: Colors.black,
+                tileColor: Colors.teal
               )
             ),
+            
             
             
             home: MyHomePage()
@@ -177,7 +193,7 @@ class _MainPageState extends State<MainPage>{
                 ),
                 
                 
-                // The below part adds a button which will be used to redirect to another page
+// The below part adds a button which will be used to redirect to another page
                 Padding(
                   padding: const EdgeInsets.only(right: 15.0),
                   child: 
@@ -194,8 +210,9 @@ class _MainPageState extends State<MainPage>{
                 )
                 ]
                 ),
-                //This is the point at which the buttons for the completed and the scheduled pages are added
-                //the first is the completed
+//This is the point at which the buttons for the completed and the scheduled pages are added
+
+//the first is the completed
               Row(children: [
                 Padding(
                   padding: const EdgeInsets.only(top:20 , left: 15),

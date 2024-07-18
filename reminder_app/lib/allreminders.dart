@@ -11,8 +11,10 @@ class Allreminders extends StatefulWidget{
 
 
 class _Allreminders extends State<Allreminders>{
+  
   @override
   Widget build(BuildContext context) {
+    
     // ignore: unnecessary_null_comparison
     if (reminders==null){
       return Center(
@@ -20,18 +22,20 @@ class _Allreminders extends State<Allreminders>{
       );
     }
 
-    return ListView.builder(
-      itemCount: reminders.length,
-      itemBuilder: (context, index){
-        return Card(
-          child: ListTile(
-            onTap: (){
-              
-            },
-            title: Text(reminders[index].title, style: TextStyle(color: Colors.black),),
-          ),
-        );
-      },
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: reminders.length,
+        itemBuilder: (context, index){
+          return Card(
+            child: ListTile(
+              onTap: (){
+                
+              },
+              title: Text(reminders[index].title, ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
