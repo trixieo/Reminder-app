@@ -16,7 +16,7 @@ class reminder{
     required this.title,  
   });
   }
-
+final List<reminder> reminders =[];
 class myNewreminder extends StatefulWidget{
   @override
   State<myNewreminder> createState() => NewReminder();
@@ -27,7 +27,7 @@ class NewReminder extends State<myNewreminder>{
   final GlobalKey<FormState> _reminderkey = GlobalKey<FormState>();
   final titlecontroller= TextEditingController();
   final desccontroller = TextEditingController();
-  final List<reminder> reminders =[];
+  
   String title ='';
   String description = '';
   
