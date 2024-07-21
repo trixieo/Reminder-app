@@ -23,18 +23,23 @@ class _Allreminders extends State<Allreminders>{
     }
 
     return Scaffold(
-      body: ListView.builder(
-        itemCount: reminders.length,
-        itemBuilder: (context, index){
-          return Card(
-            child: ListTile(
-              onTap: (){
-                
-              },
-              title: Text(reminders[index].title, ),
-            ),
-          );
-        },
+      body: Column(
+        children: [
+          PopupMenuButton(itemBuilder: itemBuilder),
+          ListView.builder(
+            itemCount: reminders.length,
+            itemBuilder: (context, index){
+              return Card(
+                child: ListTile(
+                  onTap: (){
+                    
+                  },
+                  title: Text(reminders[index].title, style: TextStyle(color: Colors.black),),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
