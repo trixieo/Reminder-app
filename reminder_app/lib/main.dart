@@ -279,7 +279,7 @@ class _MainPageState extends State<MainPage>{
                           children: [Text('Scheduled', style: TextStyle(
                              fontSize: 20,
                           )), Icon(Icons.more_vert,color: Color.fromARGB(255, 204, 220, 225), )],
-                      ), Text('number of Scheduled' ,style: TextStyle(color: Color.fromARGB(255, 204, 220, 225)),)//TODO:Connect the length of the list of Schduled items to that part of the page
+                      ), Text('number of Scheduled' ,style: TextStyle(color: Color.fromARGB(255, 204, 220, 225)),)//TODO:Connect the length of the list of Scheduled items to that part of the page
                       ],
                       )  
                       ),
