@@ -55,6 +55,10 @@ class MyApp extends StatelessWidget{
                 
                 
               ),
+              cardTheme: CardTheme(
+                color: Colors.teal,
+                shadowColor: Colors.grey
+              )
             ),
 
 //This is the dark theme
@@ -70,7 +74,9 @@ class MyApp extends StatelessWidget{
               floatingActionButtonTheme: FloatingActionButtonThemeData(
                 backgroundColor: Colors.teal,
               ),
-              cardColor: Colors.teal,
+              cardTheme: CardTheme(
+                color: Colors.teal,
+              ),
               listTileTheme: ListTileThemeData(
                 textColor: Colors.black,
                 tileColor: Colors.teal
@@ -115,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final theme =Theme.of(context);
     
-   return Scaffold(
+    return Scaffold(
     backgroundColor: theme.scaffoldBackgroundColor,
     body: Center(
       child: Text("The Reminder", 
@@ -126,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
         color: theme.primaryColor,
         ),),
     ),
-   );
+    );
   }}
 
 class MainPage extends StatefulWidget{
@@ -169,8 +175,8 @@ class _MainPageState extends State<MainPage>{
                   padding: const EdgeInsets.only(left: 15.0),
                   child: Row(
                     children: [
-                      Text(formattedDay, style: theme.textTheme.bodyLarge,
-                         ),
+                      Text(formattedDay, style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                        ),
                       Column(
                         children: [
                           Row(
@@ -221,7 +227,6 @@ class _MainPageState extends State<MainPage>{
                     height:150,
                     child: ElevatedButton(
                       onPressed: (){
-                     
                       Navigator.push(context,
                       MaterialPageRoute(builder: (context) => CompletedReminder()));
                                   
@@ -258,7 +263,6 @@ class _MainPageState extends State<MainPage>{
                     height:150,
                     child: ElevatedButton(
                       onPressed: (){
-                     
                       Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ScheduledReminder()));
                                   
@@ -277,7 +281,7 @@ class _MainPageState extends State<MainPage>{
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           
                           children: [Text('Scheduled', style: TextStyle(
-                             fontSize: 20,
+                            fontSize: 20,
                           )), Icon(Icons.more_vert,color: Color.fromARGB(255, 204, 220, 225), )],
                       ), Text('number of Scheduled' ,style: TextStyle(color: Color.fromARGB(255, 204, 220, 225)),)//TODO:Connect the length of the list of Scheduled items to that part of the page
                       ],
@@ -317,12 +321,101 @@ class _MainPageState extends State<MainPage>{
               darknotifier.value = isDark;
             }, style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white
-            ), child: Icon(isDark? Icons.wb_sunny_outlined : Icons.wb_sunny_rounded),)
-           
-            ])
-          )
-          );
-    
+            ), child: Icon(isDark? Icons.wb_sunny_outlined : Icons.wb_sunny_rounded),),
+
+            Expanded(
+              child: Stack(
+                alignment: Alignment.center,
+                children:[ 
+                Card(
+                  color: Colors.teal,
+                  shadowColor: Colors.grey,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30, top: 10, bottom: 20),
+                    child: 
+                      Column(
+                            //This is the title section
+                            
+                            children: [
+                              //This is a text section
+
+                              Row(
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text("Today's Reminders", style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),),
+                                      Text("Your daily reminders are here", style: TextStyle(color: Colors.white, fontSize: 12) ,)
+                                    ],
+                                  ),
+                                  SizedBox(width: 100,),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> TodayReminder()));
+                                },
+                                    icon: Icon(Icons.arrow_outward_rounded, size: 35,),
+                              ),
+                                  ]),
+                                ],
+                              ),
+                              
+                          ),
+                          ),
+                  Positioned.fill(
+                    top: 90,
+                    child: Card(
+                      color: Color(0xFFFF6F61),//coral color
+                      child: 
+                      Padding(padding: const EdgeInsets.only(left: 10,),
+                      //TODO: Add the right reminders),
+                      child: Column(children: [
+                        Text("First reminder")
+                      ],),
+                    ),),
+                  ),
+                  Positioned.fill(
+                    top: 180,
+                    child: Card(
+                      color: Color(0xFF003366),//coral color
+                      child: 
+                      Padding(padding: const EdgeInsets.only(left: 10,),
+                      //TODO: Add the right reminders),
+                      child: Column(children: [
+                        Text("Second reminder")
+                      ],),
+                    ),),
+                  ),
+                  Positioned.fill(
+                    top: 270,
+                    child: Card(
+                      color: Color(0xFFFFD700),//coral color
+                      child: 
+                      Padding(padding: const EdgeInsets.only(left: 10,),
+                      //TODO: Add the right reminders),
+                      child: Column(children: [
+                        Text("Third reminder")
+                      ],),
+                    ),),
+                  ),
+                  Positioned.fill(
+                    top: 360,
+                    child: Card(
+                      color: Color(0xFFF4C2C2),//coral color
+                      child: 
+                      Padding(padding: const EdgeInsets.only(left: 10,),
+                      //TODO: Add the right reminders),
+                      child: Column(children: [
+                        Text("Fourth reminder")
+                      ],),
+                    ),),
+                  ),
+                  
+                ]
+              ),
+            ),
+          ]
+        )
+      )
+    );
   }
 
 }
@@ -344,5 +437,12 @@ class ScheduledReminder extends StatelessWidget{
     return Scaffold(
 
     );
+  }
+}
+class TodayReminder extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold();
   }
 }

@@ -12,11 +12,11 @@ class reminder{
   final String date;
   final String time;
 
-  const reminder({ required this.description, required this.date, required this.time, 
-    required this.title,  
+  const reminder({ required this.title, required this.description, required this.date, required this.time, 
+      
   });
   }
-final List<reminder> reminders =[];
+final List<reminder> reminders =[reminder(title: "Default", description: "Description", date: "date", time: "time")];
 class myNewreminder extends StatefulWidget{
   @override
   State<myNewreminder> createState() => NewReminder();
@@ -25,8 +25,8 @@ class myNewreminder extends StatefulWidget{
 class NewReminder extends State<myNewreminder>{
     
   final GlobalKey<FormState> _reminderkey = GlobalKey<FormState>();
-  final titlecontroller= TextEditingController();
-  final desccontroller = TextEditingController();
+  final _titlecontroller= TextEditingController();
+  final _desccontroller = TextEditingController();
   
   String title ='';
   String description = '';
@@ -65,23 +65,24 @@ class NewReminder extends State<myNewreminder>{
   @override
   void dispose() {
     // cleans up the controller when the widget is disposed
-    titlecontroller.dispose();
+    _titlecontroller.dispose();
+    _desccontroller.dispose();
     super.dispose();
   }
   
   
 
   
- @override
- Widget build(BuildContext context) {
+@override
+Widget build(BuildContext context) {
   // ignore: unused_local_variable
   var appState = context.watch<MyAppState>();
   
   String date = DateFormat('dd-MMMM-yyyy').format(selectedDate.toLocal());
   String time = '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
 
-   return Scaffold(
-     body:  Form(
+  return Scaffold(
+    body:  Form(
       key: _reminderkey,
       child: Column(
         
@@ -96,11 +97,32 @@ class NewReminder extends State<myNewreminder>{
 
                   setState(() {
                     reminders.add(
-                      reminder(description: description, date: date, time: time, title: title)
+                      reminder(
+                        description: description, 
+                        date: date, 
+                        time: time, 
+                        title: title)
                     );
                   });
-                }
-              }, 
+                  _titlecontroller.clear();
+                  _desccontroller.clear();
+                
+                showDialog(
+                  context: context, 
+                  barrierDismissible: true,
+                  builder: (BuildContext context){ 
+                    return AlertDialog(
+                    title: Text("Your reminder has been saved"),
+                    actions: [
+                      Center(
+                        child: TextButton(
+                          onPressed: (){Navigator.of(context).pop();}, 
+                          child: Text("OK", style: TextStyle(fontSize: 20),)
+                          ),
+                      )
+                    ],
+                  );});
+              }}, 
               child: Icon(Icons.check_sharp),
               ),
           ),
@@ -109,7 +131,7 @@ class NewReminder extends State<myNewreminder>{
           Padding(
             padding: const EdgeInsets.only(top: 10.0, left: 20, right: 20),
             child: TextFormField(
-              controller: titlecontroller,
+              controller: _titlecontroller,
               style: TextStyle(
                 color: Colors.black
               ),
@@ -141,8 +163,9 @@ class NewReminder extends State<myNewreminder>{
             child:
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
-                child: TextFormField(
-                  controller: desccontroller,
+                child: 
+                TextFormField(
+                  controller: _desccontroller,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -150,8 +173,8 @@ class NewReminder extends State<myNewreminder>{
                     hintStyle: TextStyle(color: Colors.black),
                     ),
                     maxLines: null,
-                    onSaved: (value) {
-                      title= value!;
+                  onSaved: (value) {
+                    description= value!;
                     },
                     
                 ),
@@ -159,7 +182,7 @@ class NewReminder extends State<myNewreminder>{
               ),
             ),
            //This is the date selection button section    
-                     
+          
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20, top: 13 ),
             child: 
@@ -167,11 +190,11 @@ class NewReminder extends State<myNewreminder>{
                 onPressed: (){
                 DateSelection(context,);
             }, 
-             child:
-                   Row(
+            child:
+                  Row(
                     children:  [ 
                       Icon(
-                       Icons.calendar_month, 
+                        Icons.calendar_month, 
                         color: Colors.white,), 
                       SizedBox(
                         width: 10,),
@@ -184,7 +207,7 @@ class NewReminder extends State<myNewreminder>{
                   ),
                 ),
           ),
-     
+    
           //this is the section for the time section picker
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20, ),
@@ -203,8 +226,8 @@ class NewReminder extends State<myNewreminder>{
           
         ],
       ),
-     ),
-   );
+    ),
+  );
 
 
   }

@@ -24,7 +24,20 @@ class _Allreminders extends State<Allreminders>{
 
     return Scaffold(
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Container(
+            padding: const EdgeInsets.only(top: 30.0, left: 10, right: 10), 
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Reminders", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),),
+                IconButton(onPressed: (){
+                  
+                }, icon: Icon(Icons.more_horiz, size: 40, color: Colors.black,)),
+              ],
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: reminders.length,
