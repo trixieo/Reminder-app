@@ -43,11 +43,25 @@ class _Allreminders extends State<Allreminders>{
               itemCount: reminders.length,
               itemBuilder: (context, index){
                 return Card(
+                  shape:RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+                  clipBehavior: Clip.hardEdge,
                   child: ListTile(
                     onTap: (){
                       
                     },
-                    title: Text(reminders[index].title, style: TextStyle(color: Colors.black),),
+                    title:Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: 
+                        [Text(reminders[index].title, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold) ,),
+                        Text(reminders[index].description),
+                        Row(children: [
+                          Text(reminders[index].date),
+                          Text("   ||   "), 
+                          Text(reminders[index].time)
+                        ],)
+                        ],
+                        ) ,
+                    
                   ),
                 );
               },

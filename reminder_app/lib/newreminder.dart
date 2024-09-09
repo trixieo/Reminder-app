@@ -27,6 +27,7 @@ class NewReminder extends State<myNewreminder>{
   final GlobalKey<FormState> _reminderkey = GlobalKey<FormState>();
   final _titlecontroller= TextEditingController();
   final _desccontroller = TextEditingController();
+
   
   String title ='';
   String description = '';
@@ -77,9 +78,15 @@ class NewReminder extends State<myNewreminder>{
 Widget build(BuildContext context) {
   // ignore: unused_local_variable
   var appState = context.watch<MyAppState>();
+  String reminderdate = DateFormat("dd-MM-yy").format(selectedDate);
+  String time = '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
+  TextEditingController datecontroller = TextEditingController();
+  TextEditingController timecontroller = TextEditingController();
+  datecontroller.text = reminderdate;
+  timecontroller.text = time;
   
   String date = DateFormat('dd-MMMM-yyyy').format(selectedDate.toLocal());
-  String time = '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
+  
 
   return Scaffold(
     body:  Form(
@@ -99,7 +106,7 @@ Widget build(BuildContext context) {
                     reminders.add(
                       reminder(
                         description: description, 
-                        date: date, 
+                        date: reminderdate, 
                         time: time, 
                         title: title)
                     );

@@ -80,6 +80,11 @@ class MyApp extends StatelessWidget{
               listTileTheme: ListTileThemeData(
                 textColor: Colors.black,
                 tileColor: Colors.teal
+              ),
+              iconButtonTheme: IconButtonThemeData(
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.white
+                )
               )
             ),
             
@@ -105,7 +110,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
+    
   @override
   void initState(){
     super.initState();
@@ -155,6 +160,7 @@ class _MainPageState extends State<MainPage>{
     final theme = Theme.of(context);
     final date =appState.now;
     bool isDark = darknotifier.value;
+    String reminders_length = reminders.length.toString();
 
     String formattedDay = DateFormat('dd').format(date);
     String formattedMonth = DateFormat('MMMM').format(date);
@@ -197,8 +203,8 @@ class _MainPageState extends State<MainPage>{
                     ],
                   ),
                 ),
-                
-                
+
+
 // The below part adds a button which will be used to redirect to another page
                 Padding(
                   padding: const EdgeInsets.only(right: 15.0),
@@ -313,7 +319,14 @@ class _MainPageState extends State<MainPage>{
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("All reminders", style: TextStyle(fontSize: 20),),
-                    Icon(Icons.arrow_forward_sharp, size: 30,)
+                    Row(
+                      children: [
+                        Text(reminders_length, style: TextStyle(fontSize: 20),),
+                        Icon(Icons.arrow_forward_sharp, size: 30,),
+                      ],
+                    ),
+                  
+                    
                 ],
               ))),
             ElevatedButton(onPressed: (){
